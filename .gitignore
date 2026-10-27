@@ -1,0 +1,33 @@
+# Entornos virtuales Python
+venv/
+.venv/
+env/
+ENV/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Datos en runtime y base de datos SQLite WAL
+nvme_data/*.db
+nvme_data/*.db-wal
+nvme_data/*.db-shm
+*.sqlite
+*.sqlite3
+
+# Logs del sistema
+*.log
+logs/
+
+# Archivos de entorno y secretos
+.env
+.env.local
+
+# Editores y sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
