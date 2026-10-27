@@ -1,0 +1,15 @@
+[Unit]
+Description=Nano-AI Edge FastAPI & WebSocket Server
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/nano-ai-system
+ExecStart=/home/pi/nano-ai-system/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
