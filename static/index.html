@@ -343,6 +343,108 @@
 
     </section>
 
+    <!-- TABLA OFICIAL DE MÉTRICAS DE DESEMPEÑO Y VALIDACIÓN DE MODELOS -->
+    <section class="card-box border border-zinc-950 p-5 bg-white space-y-4" aria-label="Métricas Oficiales de Evaluación">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-300 pb-3">
+        <div>
+          <h2 class="font-black uppercase text-sm tracking-wider text-zinc-950">Métricas Oficiales de Desempeño y Detección de Anomalías</h2>
+          <p class="text-[11px] font-mono text-zinc-600 mt-0.5">Auditoría sobre base de datos en SSD NVMe (<code class="font-bold text-zinc-950">SQLite WAL</code> · 13,297 lecturas limpias · Umbral calibrado θ = 0.6653)</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
+          <button type="button" onclick="triggerThermalSimulation('ANOMALIA_CALOR')" class="px-2.5 py-1 border border-red-700 bg-red-100 hover:bg-red-200 text-red-950 font-black cursor-pointer">🔥 Perturbación Calor</button>
+          <button type="button" onclick="triggerThermalSimulation('ANOMALIA_FRIO')" class="px-2.5 py-1 border border-blue-700 bg-blue-100 hover:bg-blue-200 text-blue-950 font-black cursor-pointer">❄️ Perturbación Frío</button>
+          <button type="button" onclick="triggerThermalSimulation('NORMAL')" class="px-2.5 py-1 border border-emerald-700 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 font-black cursor-pointer">✓ Sincronizar Nodo Edge</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs font-mono">
+        <!-- Subtabla 1: Regresión +30m vs Baseline Estricto -->
+        <div class="border border-zinc-300 p-3 bg-zinc-50 space-y-2">
+          <div class="font-black uppercase text-zinc-950 border-b border-zinc-300 pb-1">Pronóstico Térmico +30 min (MAE vs. Baseline Estricto)</div>
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-zinc-400 text-[10px] uppercase text-zinc-700">
+                <th class="py-1">Régimen de Evaluación</th>
+                <th class="py-1">Pares</th>
+                <th class="py-1">MAE Modelo</th>
+                <th class="py-1">MAE Base</th>
+                <th class="py-1">Ganancia</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-200 text-zinc-950">
+              <tr>
+                <td class="py-1.5 font-semibold">Validación Base (Día 4)</td>
+                <td class="py-1.5">1,804</td>
+                <td class="py-1.5 font-black text-emerald-800">0.2905 °C</td>
+                <td class="py-1.5">0.6094 °C</td>
+                <td class="py-1.5 font-black text-emerald-800">+52.33%</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 font-bold">Evaluación — Operación Normal</td>
+                <td class="py-1.5">1,922</td>
+                <td class="py-1.5 font-black text-emerald-800" id="eval-mae-norm">0.2932 °C</td>
+                <td class="py-1.5" id="eval-base-norm">0.7367 °C</td>
+                <td class="py-1.5 font-black text-emerald-800" id="eval-gain-norm">+60.20%</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 font-bold">Evaluación — Estrés Térmico</td>
+                <td class="py-1.5">3,099</td>
+                <td class="py-1.5 font-black text-zinc-950" id="eval-mae-stress">2.0812 °C</td>
+                <td class="py-1.5" id="eval-base-stress">2.6522 °C</td>
+                <td class="py-1.5 font-black text-emerald-800" id="eval-gain-stress">+21.53%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Subtabla 2: Detección de Anomalías y Falsas Alarmas/Hora -->
+        <div class="border border-zinc-300 p-3 bg-zinc-50 space-y-2">
+          <div class="font-black uppercase text-zinc-950 border-b border-zinc-300 pb-1">Detector de Anomalías (% Detectadas y Falsas Alarmas/h)</div>
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-zinc-400 text-[10px] uppercase text-zinc-700">
+                <th class="py-1">Protocolo de Perturbación</th>
+                <th class="py-1">Ventanas</th>
+                <th class="py-1">% Detectado</th>
+                <th class="py-1">Latencia</th>
+                <th class="py-1">Falsas Alarmas/h</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-200 text-zinc-950">
+              <tr>
+                <td class="py-1.5 font-semibold text-red-700">Perturbación Calor (30.31 °C)</td>
+                <td class="py-1.5">48 / 49</td>
+                <td class="py-1.5 font-black text-emerald-800">97.96%</td>
+                <td class="py-1.5">10.0 s</td>
+                <td class="py-1.5">—</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 font-semibold text-blue-800">Perturbación Frío (19.25 °C)</td>
+                <td class="py-1.5">40 / 41</td>
+                <td class="py-1.5 font-black text-emerald-800">97.56%</td>
+                <td class="py-1.5">10.0 s</td>
+                <td class="py-1.5">—</td>
+              </tr>
+              <tr>
+                <td class="py-1.5 font-semibold text-amber-800">Obstrucción de Flujo (29.94 °C)</td>
+                <td class="py-1.5">57 / 61</td>
+                <td class="py-1.5 font-black text-emerald-800">93.44%</td>
+                <td class="py-1.5">40.0 s</td>
+                <td class="py-1.5">—</td>
+              </tr>
+              <tr class="bg-emerald-50">
+                <td class="py-1.5 font-black">Resultado Global (3/3 Eventos)</td>
+                <td class="py-1.5 font-bold">145 / 151</td>
+                <td class="py-1.5 font-black text-emerald-800" id="eval-anom-recall">96.03% (F1=0.9764)</td>
+                <td class="py-1.5 font-bold">100% Sesiones</td>
+                <td class="py-1.5 font-black text-emerald-800" id="eval-fa-hr">0.0879 / hr</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- 3. CHATBOT ASISTENTE (Guardrail ONNX + SLM Qwen2.5-0.5B GGUF) -->
@@ -411,6 +513,16 @@
 
     function resolveWsUrl(path = "/ws/stream") {
       return `ws://nanoaitemp.local:8000${path}`;
+    }
+
+    async function triggerThermalSimulation(mode) {
+      try {
+        const res = await fetch(`/api/telemetry/simulate?mode=${encodeURIComponent(mode)}`, { method: "POST" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.payload) updateDashboardCards(data.payload);
+        }
+      } catch (e) {}
     }
 
     function computeThermalSensation(tempC) {

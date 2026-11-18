@@ -1,0 +1,114 @@
+{
+  "project": "Nano-AI Edge Thermal Forecaster & Anomaly Detector",
+  "generated_at": "2026-11-17T18:41:03",
+  "database_audit": {
+    "active_db_path": "/mnt/nvme/nano_ai/data/telemetry.db",
+    "backup_db_path": "/mnt/nvme/nano_ai/data/telemetry_backup.db",
+    "backup_size_bytes": 4280320,
+    "backup_sha256": "16638D19E3B79CB0DE1DCD0D3A2D6A6114BB9E665DF8DAD952C2814765DEA15C",
+    "journal_mode": "wal",
+    "raw_readings_total": 20404,
+    "clean_readings_total": 13297,
+    "null_or_corrupt_predictions": 0,
+    "backup_integrity_percent": 100.0
+  },
+  "regression_30m_evaluation": {
+    "validation_day4_baseline_comparison": {
+      "causal_pairs": 1804,
+      "mae_model_c": 0.2905,
+      "mae_baseline_c": 0.6094,
+      "delta_mae_c": 0.3189,
+      "gain_percent": 52.33,
+      "rmse_model_c": 0.4571,
+      "rmse_baseline_c": 0.8701,
+      "r2_model": 0.731
+    },
+    "unseen_normal_operation": {
+      "causal_pairs": 1922,
+      "mae_model_c": 0.2932,
+      "mae_baseline_c": 0.7367,
+      "delta_mae_c": 0.4435,
+      "gain_percent": 60.2,
+      "rmse_model_c": 0.3698,
+      "rmse_baseline_c": 0.9056,
+      "r2_model": 0.7678
+    },
+    "unseen_perturbation_stress_day6": {
+      "causal_pairs": 3099,
+      "mae_model_c": 2.0812,
+      "mae_baseline_c": 2.6522,
+      "delta_mae_c": 0.571,
+      "gain_percent": 21.53,
+      "rmse_model_c": 2.5709,
+      "rmse_baseline_c": 3.3542,
+      "r2_model": -0.8135
+    }
+  },
+  "anomaly_detection_evaluation": {
+    "frozen_threshold_mse": 0.6653,
+    "normal_mean_temp_c": 23.1484,
+    "session_detection_rate_percent": 100.0,
+    "sessions_detected": "3 / 3",
+    "window_recall_tpr_percent": 96.03,
+    "window_precision_percent": 99.32,
+    "window_f1_score": 0.9764,
+    "total_perturbation_windows": 151,
+    "true_positives_tp": 145,
+    "false_negatives_fn": 6,
+    "normal_operation_hours": 11.37,
+    "total_normal_windows": 2729,
+    "true_negatives_tn": 2728,
+    "false_positives_fp": 1,
+    "false_alarms_per_hour": 0.0879,
+    "false_positive_rate_percent": 0.0366,
+    "validation_day4_false_alarms_per_hour": 0.0,
+    "perturbation_sessions": [
+      {
+        "session_id": "HEAT-SHOCK",
+        "perturbation_type": "ANOMALIA_CALOR",
+        "physical_stimulus": "Localized heat source applied near DS18B20 probe (19:12 - 19:35)",
+        "time_window": "2026-11-10 19:12:42 to 19:35:35",
+        "total_windows": 49,
+        "detected_windows_tp": 48,
+        "missed_windows_fn": 1,
+        "window_detection_rate_percent": 97.96,
+        "session_detected": true,
+        "detection_latency_seconds": 10.0,
+        "peak_temp_c": 30.31,
+        "max_mse": 15.983
+      },
+      {
+        "session_id": "COLD-SHOCK",
+        "perturbation_type": "ANOMALIA_FRIO",
+        "physical_stimulus": "Cold pack cooling applied to DS18B20 probe (Day 5 18:11 & Day 6 19:52)",
+        "time_window": "2026-11-05 18:11:47 & 2026-11-10 19:52:25",
+        "total_windows": 41,
+        "detected_windows_tp": 40,
+        "missed_windows_fn": 1,
+        "window_detection_rate_percent": 97.56,
+        "session_detected": true,
+        "detection_latency_seconds": 10.0,
+        "peak_temp_c": 19.25,
+        "max_mse": 2198.0688
+      },
+      {
+        "session_id": "AIRFLOW-BLOCKAGE",
+        "perturbation_type": "OBSTRUCCION_FLUJO",
+        "physical_stimulus": "Convective airflow blockage causing sustained thermal accumulation (20:08 - 20:22)",
+        "time_window": "2026-11-10 20:08:25 to 20:22:25",
+        "total_windows": 61,
+        "detected_windows_tp": 57,
+        "missed_windows_fn": 4,
+        "window_detection_rate_percent": 93.44,
+        "session_detected": true,
+        "detection_latency_seconds": 40.0,
+        "peak_temp_c": 29.94,
+        "max_mse": 27.185
+      }
+    ]
+  },
+  "edge_hardware_telemetry": {
+    "mean_inference_time_ms": 0.307,
+    "median_ram_used_mb": 88.4
+  }
+}

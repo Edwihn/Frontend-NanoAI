@@ -132,6 +132,24 @@ async def get_history(limit: int = Query(default=60, ge=1, le=1000)):
     }
 
 
+@app.get("/api/metrics")
+@app.get("/metrics")
+async def get_official_metrics():
+    """Obtiene la tabla oficial de métricas desde la Raspberry Pi o desde el respaldo local."""
+    try:
+        remote_metrics = await asyncio.to_thread(fetch_remote_json, "/api/metrics", 3.0)
+        if remote_metrics and isinstance(remote_metrics, dict):
+            return remote_metrics
+    except Exception:
+        pass
+
+    local_metrics_path = "nvme_data/official_evaluation_metrics.json"
+    if os.path.exists(local_metrics_path):
+        with open(local_metrics_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return JSONResponse(status_code=404, content={"detail": "Official evaluation metrics not found."})
+
+
 @app.get("/api/state")
 @app.get("/health")
 @app.get("/api/health")
@@ -227,10 +245,12 @@ class SimulationRequest(BaseModel):
     mode: str = "ANOMALIA_CALOR"
 
 
+@app.post("/api/telemetry/simulate")
+@app.get("/api/telemetry/simulate")
 @app.post("/api/kan20/simulate")
 @app.get("/api/kan20/simulate")
-async def simulate_kan20_event(mode: str = Query(default="ANOMALIA_CALOR"), body: Optional[SimulationRequest] = None):
-    """Permite probar la reacción visual de la UI para KAN-20 bajo demanda."""
+async def simulate_telemetry_event(mode: str = Query(default="ANOMALIA_CALOR"), body: Optional[SimulationRequest] = None):
+    """Permite probar la reacción visual de la UI ante eventos térmicos bajo demanda."""
     global latest_state
     target_mode = (body.mode if body else mode).upper().strip()
     now_iso = datetime.now().isoformat(timespec="seconds")
@@ -253,15 +273,15 @@ async def simulate_kan20_event(mode: str = Query(default="ANOMALIA_CALOR"), body
             "thermal_sensation": "Caluroso",
             "forecast_30m_c": 23.94,
             "baseline_30m_c": 28.75,
-            "rolling_mae_model": 0.0,
-            "rolling_mae_baseline": 0.0,
+            "rolling_mae_model": 0.2932,
+            "rolling_mae_baseline": 0.7367,
             "autoencoder_mse": 1.6009,
             "anomaly_threshold": ANOMALY_THRESHOLD_PROD,
             "is_anomaly": True,
             "anomaly_type": "ANOMALIA_CALOR",
             "pi_metrics": {
-                "inference_time_ms": 0.872,
-                "ram_used_mb": 115.0,
+                "inference_time_ms": 0.307,
+                "ram_used_mb": 88.4,
             },
         }
     elif target_mode == "ANOMALIA_FRIO":
@@ -272,15 +292,15 @@ async def simulate_kan20_event(mode: str = Query(default="ANOMALIA_CALOR"), body
             "thermal_sensation": "Frío",
             "forecast_30m_c": 16.45,
             "baseline_30m_c": 14.20,
-            "rolling_mae_model": 0.0,
-            "rolling_mae_baseline": 0.0,
+            "rolling_mae_model": 0.2932,
+            "rolling_mae_baseline": 0.7367,
             "autoencoder_mse": 6.4190,
             "anomaly_threshold": ANOMALY_THRESHOLD_PROD,
             "is_anomaly": True,
             "anomaly_type": "ANOMALIA_FRIO",
             "pi_metrics": {
-                "inference_time_ms": 0.681,
-                "ram_used_mb": 115.0,
+                "inference_time_ms": 0.307,
+                "ram_used_mb": 88.4,
             },
         }
     else:
